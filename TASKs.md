@@ -1,15 +1,15 @@
 # Concept and design
 
 Assume there’s a device model consisting of three layers 
-•	Device
-•	Entity (with sub-entities)
-•	Feature
+* Device
+* Entity (with sub-entities)
+* Feature
 where the following applies:
-•	1 Device has 1..K Entities
-•	1 Entity has 0..L sub-Entities
-•	1 Entity has 1 parent (Device or Entity)
-•	1 Entity has 0..M Features
-•	1 Feature has 1 parent (Entity)
+* 1 Device has 1..K Entities
+* 1 Entity has 0..L sub-Entities
+* 1 Entity has 1 parent (Device or Entity)
+* 1 Entity has 0..M Features
+* 1 Feature has 1 parent (Entity)
 
 ## Task1
 How can a commercially available fridge/freezer combination be modelled with this device model? Hint: As an example, it can be expected that the freezer part has a switch to control the cooling temperature setpoint. This switch would be modelled as a feature. 
