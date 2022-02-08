@@ -4,6 +4,7 @@ Assume there’s a device model consisting of three layers
 * Device
 * Entity (with sub-entities)
 * Feature
+
 where the following applies:
 * 1 Device has 1..K Entities
 * 1 Entity has 0..L sub-Entities
