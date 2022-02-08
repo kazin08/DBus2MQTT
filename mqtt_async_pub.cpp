@@ -47,12 +47,7 @@ const string DFLT_SERVER_ADDRESS	{ "tcp://localhost:1883" };
 const string CLIENT_ID				{ "paho_cpp_async_publish" };
 const string PERSIST_DIR			{ "./persist" };
 
-const string TOPIC { "hello" };
-
-const char* PAYLOAD1 = "Hello, WillyWonka2!";
-const char* PAYLOAD2 = "Hi there!";
-const char* PAYLOAD3 = "Is anyone listening?";
-const char* PAYLOAD4 = "Someone is always listening.";
+const string TOPIC { "dbus" };
 
 const char* LWT_PAYLOAD = "Last will and testament.";
 
@@ -131,6 +126,7 @@ int async_publish(string msg)
 	// session or Client ID unless it's using persistence, then the local
 	// library requires an ID to identify the persistence files.
 
+	// Set addres and client ID for MQTT
 	string	address  = DFLT_SERVER_ADDRESS,
 			clientID = CLIENT_ID;
 
@@ -148,54 +144,21 @@ int async_publish(string msg)
 	cout << "  ...OK" << endl;
 
 	try {
+		// First use a message pointer.
 		cout << "\nConnecting..." << endl;
 		mqtt::token_ptr conntok = client.connect(connOpts);
 		cout << "Waiting for the connection..." << endl;
 		conntok->wait();
-		cout << "  ...OK" << endl;
+		cout << "OK" << endl;
 
-		// First use a message pointer.
-
+		// Send message
 		cout << "\nSending message..." << endl;
 		mqtt::message_ptr pubmsg = mqtt::make_message(TOPIC, msg);
 		pubmsg->set_qos(QOS);
 		client.publish(pubmsg)->wait_for(TIMEOUT);
-		cout << "  ...OK" << endl;
-
-		// // Now try with itemized publish.
-
-		// cout << "\nSending next message..." << endl;
-		// mqtt::delivery_token_ptr pubtok;
-		// pubtok = client.publish(TOPIC, PAYLOAD2, strlen(PAYLOAD2), QOS, false);
-		// cout << "  ...with token: " << pubtok->get_message_id() << endl;
-		// cout << "  ...for message with " << pubtok->get_message()->get_payload().size()
-		// 	<< " bytes" << endl;
-		// pubtok->wait_for(TIMEOUT);
-		// cout << "  ...OK" << endl;
-
-		// // Now try with a listener
-
-		// cout << "\nSending next message..." << endl;
-		// action_listener listener;
-		// pubmsg = mqtt::make_message(TOPIC, PAYLOAD3);
-		// pubtok = client.publish(pubmsg, nullptr, listener);
-		// pubtok->wait();
-		// cout << "  ...OK" << endl;
-
-		// // Finally try with a listener, but no token
-
-		// cout << "\nSending final message..." << endl;
-		// delivery_action_listener deliveryListener;
-		// pubmsg = mqtt::make_message(TOPIC, PAYLOAD4);
-		// client.publish(pubmsg, nullptr, deliveryListener);
-
-		// while (!deliveryListener.is_done()) {
-		// 	this_thread::sleep_for(std::chrono::milliseconds(100));
-		// }
-		// cout << "OK" << endl;
+		cout << " OK" << endl;
 
 		// Double check that there are no pending tokens
-
 		auto toks = client.get_pending_delivery_tokens();
 		if (!toks.empty())
 			cout << "Error: There are pending delivery tokens!" << endl;
@@ -203,7 +166,7 @@ int async_publish(string msg)
 		// Disconnect
 		cout << "\nDisconnecting..." << endl;
 		client.disconnect()->wait();
-		cout << "  ...OK" << endl;
+		cout << "OK" << endl;
 	}
 	catch (const mqtt::exception& exc) {
 		cerr << exc.what() << endl;

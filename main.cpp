@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include <dbus/dbus.h>
+#include <string.h>
 
 #include "dbus2mqtt.h"
 #ifdef _WIN32
@@ -20,6 +21,7 @@ void receive()
     DBusError err;
     int ret;
     char* sigvalue;
+    bool endServer = 1;
 
     printf("Listening for signals\n");
 
@@ -56,7 +58,7 @@ void receive()
     printf("Match rule sent\n");
 
     // loop listening for signals being emmitted
-    while (true) {
+    while (endServer) {
 
         // non blocking read of the next available message
         dbus_connection_read_write(conn, 0);
@@ -79,11 +81,13 @@ void receive()
                 fprintf(stderr, "Argument is not string!\n");
             }                 
             else {
-                dbus_message_iter_get_basic(&args, &sigvalue);
-            
+                dbus_message_iter_get_basic(&args, &sigvalue);            
                 printf("Got Signal with value %s\n", sigvalue);
 
-                std::cout << "do some stuffs" << std::endl;
+                if (strcmp(sigvalue, "exit") == 0) {
+                    endServer = 0;
+                }
+                // Send message received via MQTT
                 async_publish(sigvalue);
             }
         }
@@ -93,24 +97,32 @@ void receive()
     }
 }
 
-int main() {
-	std::string messageRcv = "null";
+int main(int argc, char* argv[]) {
+    char* msg;
 
-    // std::thread first (receive);
+    if (argc > 1) {
+        msg = argv[1];
 
-    // sleep(3);
+        // Call the function receive from DBUS
+        std::thread server (receive);
+        sleep(1);
 
-    // query("sigvalue");
+        // Send signal
+        sendsignal(msg);
 
-    // first.join();
+        sleep(1);
 
+        std::cout << "End of program." << std::endl;
+
+        return 0;
+
+    }
+    std::cout << "Now the server will wait for new messages, send exit to finish." << std::endl;
+
+    // Call the function receive from DBUS
     receive();
-	messageRcv = getDbusMessage();
-	std::cout << "getDbusMessage returned " << messageRcv << std::endl;
 
-	if(messageRcv == "null") {
-		return -1;
-	}
+    std::cout << "End of program." << std::endl;
 
 	return 0;
 }
