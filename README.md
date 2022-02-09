@@ -21,14 +21,14 @@ docker exec -it dbus_image /bin/bash
 ```
 
 ## Execute the test
-Inside the container, we have to execute the follow command to get acces to the debus in that shell:
+Inside the container, we have to execute the follow command to get access to the debus in that shell:
 
 ```bash
 export $(dbus-launch)
 ```
 
-In the folder inside te container, we have 2 executable files: dbus and dbus2mqtt.
-dbus2mqtt has the dbus server and executing without any args, it will wait for a message from dbus that can be send using dbus, but for this we need to open another console and enter in the container again using the comand from Execute the image. Also with another container we can see the MQTT message using mosquitto.
+In the folder inside the container, we have 2 executable files: dbus and dbus2mqtt.
+dbus2mqtt has the dbus server and executing without any args, it will wait for a message from dbus that can be sent using dbus, but for this we need to open another console and enter in the container again using the command from Execute the image. Also with another container we can see the MQTT message using mosquitto.
 
 To test dbus2mqtt with a message sended from the same executable use:
 
@@ -36,7 +36,7 @@ To test dbus2mqtt with a message sended from the same executable use:
 ./dbus2mqtt "message"
 ```
 
-This will initialice the Dbus server and then send the "message" from Dbus and send it to MQTT broker.
+This will initialize the Dbus server and then send the "message" from Dbus and send it to the MQTT broker.
 To subscribe all the MQTT topics, execute:
 
 ```bash

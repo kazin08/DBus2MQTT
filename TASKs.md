@@ -26,8 +26,33 @@ Assume that a library should be written that supports working with such a tree d
 Note: This is only about the interface, do not implement the library.
 
 ### Answer
-Use the brand as a code (ej: Samsung = 1, LG = 2, etc) then use the exact code of the fridge/freezer again with a new numerical code (ej: RT43K6235BS/BG = 1, RT43K6236BS/BG = 2) and for the feature we can use a normally numerical order for all the features for all brands. (ej= door light will be always 1, etc)
-This logic is similar to MIB in SNMP protocol.
+Thinking like the structure was similar to the SNMP protocol.
+
+The interface should be:
+* Read_values(addr)
+* Set_values(addr, val)
+* Get_info()
+
+#### Read_values(addr)
+Function to read values inside the Device like the status of door light, temperature, current consumption, etc. To access one feature of the device, in the function we have to pass the address value of the feature.
+* Initialise the communication
+* Send the data to the device and wait for the answer
+* When the device respond, save the data in a variable
+* Return the value
+
+#### Set_values(addr, val)
+Function to set value for the features that accept setting values. Again, the function will need the address and the value to set and will respond if the set has success or not. For example, set the Feature temperature of the fridge.
+* Initialise the communication
+* Send the address and value to the device
+* Wait for respond OK from device
+* Return True if the response was OK
+
+#### Get_info()
+This function returns all the values of the devices and can include the address of the features. This function is the first function to start the communication to get the necessary values of the device.
+* Initialise the communication
+* Send command to get info from the Device
+* Receive the values and wait for the finish signal from Device
+* Return all the values
 
 ## Task3
 Write a C++ Linux application with a DBus interface and a MQTT interface. The application should be able to receive a simple text message on the DBus interface and publish this message on the MQTT interface. The functionality of the program should be demonstrated using publicly available tools for both technologies.
